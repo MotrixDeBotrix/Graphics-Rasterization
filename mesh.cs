@@ -17,7 +17,7 @@ namespace Template
         int triangleBufferId;                   // element buffer object (EBO) for triangle vertex indices
         int quadBufferId;                       // element buffer object (EBO) for quad vertex indices (not in Modern OpenGL)
 
-        public Matrix4 localTransform = Matrix4.Identity;
+        public Matrix4 localTransform = Matrix4.Identity; //Zoiets
 
         // constructor
         public Mesh(string filename)
