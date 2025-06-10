@@ -27,9 +27,19 @@ namespace INFOGR2025TemplateP2.Architecture
             children.Add(toAdd);
         }
 
-        void Render()
+        void Render(Matrix4 cameraMatrix)
         {
+            //Render self
+            Matrix4 result = cameraMatrix * objectToParent * mesh.localTransform; //Zoiets
 
+            //Render children (if they exist)
+            if (children.Count > 0)
+            {
+                foreach (SceneGraphNode child in children)
+                {
+                    child.Render(cameraMatrix);
+                }
+            }
         }
     }
 }
