@@ -14,6 +14,19 @@ namespace INFOGR2025TemplateP2.Architecture
         Mesh mesh;
         List<SceneGraphNode> children;
 
+        public SceneGraphNode(Matrix4 oTP, Mesh m)
+        {
+            objectToParent = oTP;
+            mesh = m;
+
+            children = new();
+        }
+
+        public void AddChild(SceneGraphNode toAdd)
+        {
+            children.Add(toAdd);
+        }
+
         void Render()
         {
 
