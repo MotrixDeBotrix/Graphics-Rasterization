@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using INFOGR2025TemplateP2.Architecture;
 using OpenTK.Mathematics;
 
 namespace Template
@@ -16,6 +17,8 @@ namespace Template
         RenderTarget? target;                   // intermediate render target
         ScreenQuad? quad;                       // screen filling quad for post processing
         readonly bool useRenderTarget = true;   // required for post processing
+
+        SceneGraphNode scene = new(Matrix4.Identity, null);
 
         // constructor
         public MyApplication(Surface screen)
@@ -49,48 +52,49 @@ namespace Template
         // tick for OpenGL rendering code
         public void RenderGL()
         {
-            // measure frame duration
             float frameDuration = timer.ElapsedMilliseconds;
-            timer.Reset();
-            timer.Start();
+            timer.Restart();
 
-            // prepare matrix for vertex shader
             float angle90degrees = MathF.PI / 2;
             Matrix4 teapotObjectToWorld = Matrix4.CreateScale(0.5f) * Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), a);
             Matrix4 floorObjectToWorld = Matrix4.CreateScale(4.0f) * Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), a);
             Matrix4 worldToCamera = Matrix4.CreateTranslation(new Vector3(0, -14.5f, 0)) * Matrix4.CreateFromAxisAngle(new Vector3(1, 0, 0), angle90degrees);
-            Matrix4 cameraToScreen = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60.0f), (float)screen.width/screen.height, .1f, 1000);
+            Matrix4 cameraToScreen = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60.0f), (float)screen.width / screen.height, 0.1f, 1000);
+            Matrix4 viewProjection = worldToCamera * cameraToScreen;
 
-            // update rotation
+            // Update scene graph
+            var teapotNode = new SceneGraphNode(teapotObjectToWorld, teapot);
+            var floorNode = new SceneGraphNode(floorObjectToWorld, floor);
+            scene = new SceneGraphNode(Matrix4.Identity, null);
+            scene.AddChild(teapotNode);
+            scene.AddChild(floorNode);
+
+            // Update rotation
             a += 0.001f * frameDuration;
             if (a > 2 * MathF.PI) a -= 2 * MathF.PI;
 
+            // Bind target or default framebuffer
             if (useRenderTarget && target != null && quad != null)
             {
-                // enable render target
                 target.Bind();
-
-                // render scene to render target
-                if (shader != null && wood != null)
-                {
-                    teapot?.Render(shader, teapotObjectToWorld * worldToCamera * cameraToScreen, teapotObjectToWorld, wood);
-                    floor?.Render(shader, floorObjectToWorld * worldToCamera * cameraToScreen, floorObjectToWorld, wood);
-                }
-
-                // render quad
-                target.Unbind();
-                if (postproc != null)
-                    quad.Render(postproc, target.GetTextureID());
             }
-            else
+
+            // Render scene
+            if (shader != null && wood != null)
             {
-                // render scene directly to the screen
-                if (shader != null && wood != null)
+                scene.Render(Matrix4.Identity, viewProjection, shader, wood);
+            }
+
+            if (useRenderTarget && target != null && quad != null)
+            {
+                target.Unbind(); // back to screen
+
+                if (postproc != null)
                 {
-                    teapot?.Render(shader, teapotObjectToWorld * worldToCamera * cameraToScreen, teapotObjectToWorld, wood);
-                    floor?.Render(shader, floorObjectToWorld * worldToCamera * cameraToScreen, floorObjectToWorld, wood);
+                    quad.Render(postproc, target.GetTextureID());
                 }
             }
         }
+
     }
 }

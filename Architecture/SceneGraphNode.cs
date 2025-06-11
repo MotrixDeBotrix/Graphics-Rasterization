@@ -1,44 +1,40 @@
 ﻿using OpenTK.Mathematics;
 using Template;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace INFOGR2025TemplateP2.Architecture
 {
     internal class SceneGraphNode
     {
-        Matrix4 objectToParent;
-        Mesh mesh;
-        List<SceneGraphNode> children;
+        private Matrix4 localTransform;
+        private Mesh? mesh;
+        private List<SceneGraphNode> children;
 
-        public SceneGraphNode(Matrix4 oTP, Mesh m)
+        public SceneGraphNode(Matrix4 localTransform, Mesh? mesh)
         {
-            objectToParent = oTP;
-            mesh = m;
-
-            children = new();
+            this.localTransform = localTransform;
+            this.mesh = mesh;
+            children = new List<SceneGraphNode>();
         }
 
-        public void AddChild(SceneGraphNode toAdd)
+        public void AddChild(SceneGraphNode child)
         {
-            children.Add(toAdd);
+            children.Add(child);
         }
 
-        void Render(Matrix4 cameraMatrix)
+        public void Render(Matrix4 parentToWorld, Matrix4 viewProjection, Shader shader, Texture texture)
         {
-            //Render self
-            Matrix4 result = cameraMatrix * objectToParent * mesh.localTransform; //Zoiets
+            Matrix4 objectToWorld = localTransform * parentToWorld;
+            Matrix4 objectToScreen = objectToWorld * viewProjection;
 
-            //Render children (if they exist)
-            if (children.Count > 0)
+            if (mesh != null)
             {
-                foreach (SceneGraphNode child in children)
-                {
-                    child.Render(cameraMatrix);
-                }
+                mesh.Render(shader, objectToScreen, objectToWorld, texture);
+            }
+
+            foreach (SceneGraphNode child in children)
+            {
+                child.Render(objectToWorld, viewProjection, shader, texture);
             }
         }
     }
