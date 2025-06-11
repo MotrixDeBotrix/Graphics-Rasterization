@@ -62,24 +62,20 @@ namespace Template
             Matrix4 cameraToScreen = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60.0f), (float)screen.width / screen.height, 0.1f, 1000);
             Matrix4 viewProjection = worldToCamera * cameraToScreen;
 
-            // Update scene graph
             var teapotNode = new SceneGraphNode(teapotObjectToWorld, teapot);
             var floorNode = new SceneGraphNode(floorObjectToWorld, floor);
             scene = new SceneGraphNode(Matrix4.Identity, null);
             scene.AddChild(teapotNode);
             scene.AddChild(floorNode);
 
-            // Update rotation
             a += 0.001f * frameDuration;
             if (a > 2 * MathF.PI) a -= 2 * MathF.PI;
 
-            // Bind target or default framebuffer
             if (useRenderTarget && target != null && quad != null)
             {
                 target.Bind();
             }
 
-            // Render scene
             if (shader != null && wood != null)
             {
                 scene.Render(Matrix4.Identity, viewProjection, shader, wood);
@@ -87,7 +83,7 @@ namespace Template
 
             if (useRenderTarget && target != null && quad != null)
             {
-                target.Unbind(); // back to screen
+                target.Unbind();
 
                 if (postproc != null)
                 {
