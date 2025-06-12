@@ -73,7 +73,7 @@ namespace Template
             GL.BindTexture(TextureTarget.Texture2D, texture.id);                                // bind the texture as a 2D image texture to the active texture unit
 
             int ambientLoc = GL.GetUniformLocation(shader.programID, "ambientLightColor");
-            GL.Uniform4(ambientLoc, 0.5f, 0.5f, 0.5f, 1.0f);
+            GL.Uniform4(ambientLoc, 0.5f, 0.5f, 0.5f, 1.0f); //Hardcoded ambient light kleur voor nu
 
             // pass transforms to vertex shader
             GL.UniformMatrix4(shader.uniform_objectToScreen, false, ref objectToScreen);
