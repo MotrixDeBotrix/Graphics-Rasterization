@@ -6,14 +6,13 @@ in vec4 normalWorld;        // fragment normal in World Space (should probably b
 in vec2 uv;                 // fragment UV texture coordinates
 
 uniform sampler2D diffuseTexture;  // texture sampler
-vec4 ambientLightColor = vec4(0.93, 0.88, 0.74, 1.0); //Test ambient light
+uniform vec4 ambientLightColor;
 
 // shader output
 out vec4 outputColor;
 
 void main()
 {
-    vec3 normal = normalize(normalWorld.xyz);
     vec4 texColor = texture(diffuseTexture, uv);
     outputColor = texColor * ambientLightColor;
 }
