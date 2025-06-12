@@ -8,12 +8,14 @@ namespace INFOGR2025TemplateP2.Architecture
     {
         private Matrix4 localTransform;
         private Mesh? mesh;
+        private Light? light;
         private List<SceneGraphNode> children;
 
-        public SceneGraphNode(Matrix4 localTransform, Mesh? mesh)
+        public SceneGraphNode(Matrix4 localTransform, Mesh? mesh, Light? light)
         {
             this.localTransform = localTransform;
             this.mesh = mesh;
+            this.light = light;
             children = new List<SceneGraphNode>();
         }
 
@@ -30,6 +32,11 @@ namespace INFOGR2025TemplateP2.Architecture
             if (mesh != null)
             {
                 mesh.Render(shader, objectToScreen, objectToWorld, texture);
+            }
+
+            if (light != null)
+            {
+                light.Render();
             }
 
             foreach (SceneGraphNode child in children)
