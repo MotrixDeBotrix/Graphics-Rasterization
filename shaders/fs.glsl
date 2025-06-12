@@ -6,7 +6,10 @@ in vec4 normalWorld;        // fragment normal in World Space (should probably b
 in vec2 uv;                 // fragment UV texture coordinates
 
 uniform sampler2D diffuseTexture;  // texture sampler
-uniform vec4 ambientLightColor;
+uniform vec4 ambientLightColor; //Wordt doorgegeven vanuit de code
+
+uniform vec4 light1Position;
+uniform vec4 light1Color;
 
 // shader output
 out vec4 outputColor;
