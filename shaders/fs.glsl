@@ -8,14 +8,14 @@ in vec2 uv;                 // fragment UV texture coordinates
 uniform sampler2D diffuseTexture;  // texture sampler
 uniform vec4 ambientLightColor; //Wordt doorgegeven vanuit de code
 
-uniform vec4 light1Position;
-uniform vec4 light1Color;
+//uniform vec4 light1Position;
+//uniform vec4 light1Color;
 
 // shader output
-out vec4 outputColor;
+out vec4 fragColor;
 
 void main()
 {
     vec4 texColor = texture(diffuseTexture, uv);
-    outputColor = texColor * ambientLightColor;
+    fragColor = texColor * ambientLightColor;
 }
